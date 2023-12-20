@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Selección de valores</title>
+  <style>
+    /* Estilos responsivos */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    /* Estilos para el contenedor principal */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Estilos para los selectores */
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* Estilos para los elementos del formulario */
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* Otros estilos */
+    p {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <label for="federacion">Selecciona una federación:</label>
+    <select id="federacion" onchange="mostrarCategorias()">
+      <option value="">Elige una opción</option>
+      <option value="FMRM">FMRM</option>
+      <option value="FEDME">FEDME</option>
+    </select>
+
+    <div id="categorias" style="display: none;">
+      <label for="categoria">Selecciona una categoría:</label>
+      <select id="categoria" onchange="mostrarValores()">
+        <option value="">Elige una categoría</option>
+      </select>
+    </div>
+
+    <div id="valores" style="display: none;">
+      <label for="valor">Selecciona un valor:</label>
+      <select id="valor" onchange="mostrarComplementos()">
+        <option value="">Elige un valor</option>
+      </select>
+    </div>
+
+    <div id="complementos" style="display: none;">
+      <label for="complemento">Selecciona un complemento:</label>
+      <select id="complemento" onchange="mostrarTarifaFinal()">
+        <option value="">Elige un complemento</option>
+      </select>
+    </div>
+
+    <div id="tarifaFinal" style="display: none;">
+      <label for="tarifa">Selecciona una tarifa adicional:</label>
+      <select id="tarifa" onchange="calcularSubtotalFinal()">
+        <option value="">Elige una tarifa</option>
+        <option value="Mayores de 18 años sin hijos">Mayores de 18 años sin hijos - 55,00 €</option>
+        <option value="Mayores de 18 años con hijos en el club">Mayores de 18 años con hijos en el club - 45,00 €</option>
+        <option value="Menores de 18 años">Menores de 18 años - 27,50 €</option>
+      </select>
+    </div>
+
+    <div id="subtotal" style="display: none;">
+      <p>Subtotal: <span id="subtotalValor">0</span></p>
+      <label for="impresion">¿Impresión? </label>
+      <input type="checkbox" id="impresion" onchange="calcularSubtotalFinal()">
+      <p>Valor final: <span id="valorFinal">0</span></p>
+    </div>
+  </div>
+
+  <script>
+     var valores = {
+      FMRM: {
+        Infantil: {
+          A: 19,
+          B: 20,
+          C: 27.50,
+          D: 42.50,
+          E: 498,
+          OT: 15.50,
+          AU: 19.50,
+          HAB: 7
+        },
+        Juvenil: {
+          A: 24,
+          B: 41,
+          C: 56,
+          D: 84,
+          E: 498,
+          OT: 21,
+          AU: 24.50,
+          HAB: 12
+        },
+        Adultos: {
+          A: 42,
+          B: 59.50,
+          C: 99.50,
+          D: 149,
+          E: 498,
+          OT: 35,
+          AU: 42.50,
+          HAB: 24
+        }
+      },
+      FEDME: {
+        Infantil: {
+          A: 20.33,
+          B: 21.33,
+          C: 28.83,
+          D: 43.83,
+          E: 499.33,
+          OT: 18.83,
+          AU: 0,
+          HAB: 0
+        },
+        Juvenil: {
+          A: 30.25,
+          B: 47.25,
+          C: 62.25,
+          D: 90.25,
+          E: 504.25,
+          OT: 16.83,
+          AU: 0,
+          HAB: 0
+        },
+        Adultos: {
+          A: 55.33,
+          B: 72.83,
+          C: 112.83,
+          D: 162.33,
+          E: 511.33,
+          OT: 0,
+          AU: 0,
+          HAB: 0
+        }
+      }
+    };
+
+    function mostrarCategorias() {
+      var federacion = document.getElementById('federacion').value;
+      var categorias = document.getElementById('categoria');
+      categorias.innerHTML = '<option value="">Elige una categoría</option>';
+
+      if (federacion) {
+        for (var categoria in valores[federacion]) {
+          categorias.innerHTML += '<option value="' + categoria + '">' + categoria + '</option>';
+        }
+        document.getElementById('categorias').style.display = 'block';
+      }
+    }
+
+    function mostrarValores() {
+      var categoria = document.getElementById('categoria').value;
+      var valoresSelect = document.getElementById('valor');
+      valoresSelect.innerHTML = '<option value="">Elige un valor</option>';
+
+      if (categoria) {
+        for (var valor in valores[document.getElementById('federacion').value][categoria]) {
+          valoresSelect.innerHTML += '<option value="' + valor + '">' + valor + '</option>';
+        }
+        document.getElementById('valores').style.display = 'block';
+      }
+    }
+
+    function mostrarComplementos() {
+      var valor = document.getElementById('valor').value;
+      var complementos = document.getElementById('complemento');
+      complementos.innerHTML = '<option value="">Elige un complemento</option>';
+
+      if (valor) {
+        complementos.innerHTML += '<option value="BXM">BXM</option>';
+        complementos.innerHTML += '<option value="Esquí Alpino">Esquí Alpino</option>';
+        complementos.innerHTML += '<option value="Snow">Snow</option>';
+        complementos.innerHTML += '<option value="NINGUNA">Ninguna</option>';
+        document.getElementById('complementos').style.display = 'block';
+      }
+    }
+
+    function mostrarTarifaFinal() {
+      var complemento = document.getElementById('complemento').value;
+      var tarifaFinal = document.getElementById('tarifa');
+      tarifaFinal.innerHTML = '<option value="">Elige una tarifa</option>';
+
+      if (complemento) {
+        tarifaFinal.innerHTML += '<option value="Mayores de 18 años sin hijos">Mayores de 18 años sin hijos - 55,00 €</option>';
+        tarifaFinal.innerHTML += '<option value="Mayores de 18 años con hijos en el club">Mayores de 18 años con hijos en el club - 45,00 €</option>';
+        tarifaFinal.innerHTML += '<option value="Menores de 18 años">Menores de 18 años - 27,50 €</option>';
+        document.getElementById('tarifaFinal').style.display = 'block';
+      }
+    }
+
+    function calcularSubtotalFinal() {
+      var subtotalValor = 0;
+      var federacion = document.getElementById('federacion').value;
+      var categoria = document.getElementById('categoria').value;
+      var valor = document.getElementById('valor').value;
+      var complemento = document.getElementById('complemento').value;
+      var tarifa = document.getElementById('tarifa').value;
+
+      if (federacion && categoria && valor && complemento && tarifa) {
+        subtotalValor = valores[federacion][categoria][valor];
+
+        if (complemento === 'BXM') {
+          subtotalValor += 12;
+        } else if (complemento === 'Esquí Alpino') {
+          subtotalValor += 34.50;
+        } else if (complemento === 'Snow') {
+          subtotalValor += 47.50;
+        }
+
+        if (tarifa === 'Mayores de 18 años sin hijos') {
+          subtotalValor += 55.00;
+        } else if (tarifa === 'Mayores de 18 años con hijos en el club') {
+          subtotalValor += 45.00;
+        } else if (tarifa === 'Menores de 18 años') {
+          subtotalValor += 27.50;
+        }
+
+        var checkboxImpresion = document.getElementById('impresion');
+        if (checkboxImpresion.checked) {
+          subtotalValor += 2;
+        }
+
+        document.getElementById('subtotal').style.display = 'block';
+        document.getElementById('subtotalValor').innerText = subtotalValor;
+
+        var valorFinal = document.getElementById('valorFinal');
+        valorFinal.innerText = subtotalValor; // Establecer el valor final igual al subtotal
+      }
+    }
+  </script>
+
+</body>
+</html>
