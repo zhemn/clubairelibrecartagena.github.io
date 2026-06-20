@@ -1,0 +1,466 @@
+<div id="licencia-app" class="cal-licencia-form">
+
+  <style>
+    .cal-licencia-form {
+      --tinta: #1c2b22;
+      --musgo: #4a6b52;
+      --piedra: #e9e4d8;
+      --hueso: #f7f4ec;
+      --terracota: #b5573c;
+      --linea: #d8d2c2;
+      max-width: 640px;
+      margin: 0 auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--tinta);
+      background: var(--hueso);
+      border: 1px solid var(--linea);
+      border-radius: 4px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .cal-licencia-form * { box-sizing: border-box; }
+    .cal-head {
+      background: var(--tinta);
+      color: var(--hueso);
+      padding: 28px 28px 22px;
+    }
+    .cal-head .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9fb3a5;
+      margin: 0 0 6px;
+    }
+    .cal-head h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .cal-body { padding: 24px 28px 28px; }
+    .cal-step { margin-bottom: 22px; }
+    .cal-step-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--musgo);
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .cal-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .cal-field { flex: 1 1 220px; }
+    .cal-field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: var(--tinta);
+    }
+    .cal-field input,
+    .cal-field select,
+    .cal-field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--linea);
+      border-radius: 3px;
+      background: #fff;
+      font-size: 14px;
+      color: var(--tinta);
+      font-family: inherit;
+    }
+    .cal-field input:focus,
+    .cal-field select:focus,
+    .cal-field textarea:focus {
+      outline: 2px solid var(--musgo);
+      outline-offset: 1px;
+    }
+    .cal-hint {
+      font-size: 12px;
+      color: #6b7268;
+      margin-top: 4px;
+    }
+    .cal-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--piedra);
+      border-radius: 3px;
+      padding: 14px;
+      margin-top: 4px;
+    }
+    .cal-checkbox-row input { width: auto; margin-top: 3px; }
+    .cal-checkbox-row label { font-size: 13px; margin: 0; }
+    .cal-hidden { display: none !important; }
+    .cal-total-box {
+      border: 1px solid var(--musgo);
+      background: #eef3ee;
+      border-radius: 4px;
+      padding: 16px 18px;
+      margin: 22px 0;
+    }
+    .cal-total-box .linea {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--tinta);
+      padding: 2px 0;
+    }
+    .cal-total-box .total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 700;
+      border-top: 1px solid var(--musgo);
+      margin-top: 8px;
+      padding-top: 8px;
+    }
+    .cal-bizum-box {
+      background: var(--tinta);
+      color: var(--hueso);
+      border-radius: 4px;
+      padding: 18px 20px;
+      margin: 18px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .cal-bizum-box strong { color: #ffd9c9; }
+    .cal-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--terracota);
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .cal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cal-submit:hover:not(:disabled) { background: #9a4830; }
+    .cal-msg {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+    .cal-msg.ok { background: #e3f0e6; color: #2c5235; border: 1px solid #a6c9ad; }
+    .cal-msg.err { background: #f5e3e1; color: #7a2c1e; border: 1px solid #d9a89e; }
+  </style>
+
+  <div class="cal-head">
+    <p class="eyebrow">Club Aire Libre Cartagena</p>
+    <h2>Solicitud de licencia federativa 2026</h2>
+  </div>
+
+  <div class="cal-body">
+    <form id="cal-form">
+
+      <div class="cal-step">
+        <span class="cal-step-label">1 · Tus datos</span>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-nombre">Nombre completo</label>
+            <input type="text" id="cal-nombre" required>
+          </div>
+          <div class="cal-field">
+            <label for="cal-nif">NIF</label>
+            <input type="text" id="cal-nif" required>
+          </div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-email">Email de contacto</label>
+            <input type="email" id="cal-email" required>
+          </div>
+          <div class="cal-field">
+            <label for="cal-telefono">Teléfono</label>
+            <input type="tel" id="cal-telefono" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">2 · Licencia federativa</span>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-categoria">Categoría</label>
+            <select id="cal-categoria" required>
+              <option value="">Selecciona…</option>
+              <option value="Infantil">Infantil (0-13 años)</option>
+              <option value="Juvenil">Juvenil (14-17 años)</option>
+              <option value="Adultos">Adultos (18 años en adelante)</option>
+            </select>
+          </div>
+          <div class="cal-field">
+            <label for="cal-tarjeta">Tarjeta</label>
+            <select id="cal-tarjeta" required>
+              <option value="">Selecciona…</option>
+              <option value="FMRM">FMRM</option>
+              <option value="FEDME">FEDME (necesaria para competición nacional)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-modalidad">Modalidad</label>
+            <select id="cal-modalidad" required>
+              <option value="">Selecciona…</option>
+              <option value="AU">AU — Solo rocódromo (Región de Murcia, no válida para competición)</option>
+              <option value="A">A — Excursionismo, montañismo, senderismo (NO válida para escalada)</option>
+              <option value="B">B — Escalada, alpinismo, barrancos… España, Andorra, Pirineo Fr., Portugal y Marruecos</option>
+              <option value="C">C — Europa y Marruecos</option>
+              <option value="D">D — Mundial hasta 7000 m, sin expediciones polares</option>
+              <option value="E">E — Expediciones polares y montañas +7000 m</option>
+              <option value="OT">OT — Octubre-Diciembre, solo disponible en esas fechas</option>
+              <option value="HAB">HAB — Habilitación sin seguro (ya federado en otra federación)</option>
+            </select>
+            <p class="cal-hint">¿Solo vas a usar el rocódromo? Elige <strong>AU</strong>. ¿Vas a escalar en roca fuera de Murcia? Elige <strong>B</strong> o superior.</p>
+          </div>
+        </div>
+        <div class="cal-row cal-hidden" id="cal-complemento-row">
+          <div class="cal-field">
+            <label for="cal-complemento">Complemento (opcional)</label>
+            <select id="cal-complemento">
+              <option value="">Ninguno</option>
+              <option value="Bicicleta">Bicicleta de Montaña (+9,00 €)</option>
+              <option value="Esquí Alpino">Esquí Alpino (+35,50 €)</option>
+              <option value="Snow">Snow (+49,00 €)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-tarjeta-fisica">Tarjeta física impresa</label>
+            <select id="cal-tarjeta-fisica">
+              <option value="no">No, solo digital (gratis)</option>
+              <option value="si">Sí, quiero tarjeta física (+2,00 €)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">3 · Cuota de socio del club</span>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-cuota-tipo">Tipo de cuota</label>
+            <select id="cal-cuota-tipo" required>
+              <option value="">Selecciona…</option>
+              <option value="Mayor de 18 sin hijos en el club">Mayor de 18 sin hijos en el club</option>
+              <option value="Mayor de 18 con hijos en el club">Mayor de 18 con hijos en el club</option>
+              <option value="Menor de 18 años">Menor de 18 años</option>
+            </select>
+          </div>
+          <div class="cal-field">
+            <label for="cal-cuota-periodo">Periodo</label>
+            <select id="cal-cuota-periodo" required>
+              <option value="Año completo">Año completo</option>
+              <option value="Octubre-Diciembre">Octubre - Diciembre</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">4 · Reducción de cuota (opcional)</span>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-reduccion">¿Solicitas reducción por voluntariado, hijos en el club, podios, etc.?</label>
+            <select id="cal-reduccion">
+              <option value="no">No</option>
+              <option value="si">Sí</option>
+            </select>
+          </div>
+        </div>
+        <div class="cal-row cal-hidden" id="cal-reduccion-just-row">
+          <div class="cal-field">
+            <label for="cal-reduccion-just">Justifica brevemente el motivo</label>
+            <textarea id="cal-reduccion-just" rows="2"></textarea>
+            <p class="cal-hint">La reducción debe ser aprobada por el club antes de tramitar la licencia. No se descuenta automáticamente del total: la directiva la revisará y ajustará el cobro.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-total-box">
+        <div class="linea"><span>Licencia federativa</span><span id="cal-out-licencia">—</span></div>
+        <div class="linea"><span>Complemento</span><span id="cal-out-complemento">—</span></div>
+        <div class="linea"><span>Tarjeta física</span><span id="cal-out-fisica">—</span></div>
+        <div class="linea"><span>Cuota de socio</span><span id="cal-out-club">—</span></div>
+        <div class="total"><span>Total a pagar por transferencia</span><span id="cal-out-total">0,00 €</span></div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">5 · Pago por transferencia</span>
+        <div class="cal-bizum-box">
+          Haz una transferencia a la cuenta del Club Aire Libre Cartagena:<br>
+          <strong>ES35 0073 0100 5905 0551 7024</strong><br>
+          Por el importe exacto mostrado arriba.<br>
+          En el concepto escribe tu <strong>NIF y nombre</strong>.<br>
+          Después, sube aquí el justificante de la transferencia.
+        </div>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-justificante">Justificante de la transferencia</label>
+            <input type="file" id="cal-justificante" accept="image/*,application/pdf" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">6 · Cesión de datos</span>
+        <div class="cal-checkbox-row">
+          <input type="checkbox" id="cal-acepto" required>
+          <label for="cal-acepto">He leído y acepto la cláusula de cesión de datos del Club Aire Libre Cartagena (Anexo I) para la gestión de mi licencia federativa.</label>
+        </div>
+      </div>
+
+      <button type="submit" class="cal-submit" id="cal-submit-btn">Enviar solicitud</button>
+      <div id="cal-msg"></div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ⚠️ Pega aquí la URL de tu Apps Script publicado como aplicación web
+  const ENDPOINT_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID_DE_DESPLIEGUE/exec';
+
+  const PRECIOS_LICENCIA = {
+    FMRM: {
+      Infantil: { A: 19.50, B: 20.50, C: 28.50, D: 44.00, E: 520.00, OT: 16.00, AU: 20.00, HAB: 7.00 },
+      Juvenil:  { A: 25.00, B: 42.00, C: 58.00, D: 87.50, E: 520.00, OT: 22.00, AU: 25.50, HAB: 12.00 },
+      Adultos:  { A: 43.00, B: 61.50, C: 103.00, D: 155.00, E: 520.00, OT: 36.00, AU: 43.50, HAB: 24.00 }
+    },
+    FEDME: {
+      Infantil: { A: 22.06, B: 23.06, C: 31.06, D: 46.56, E: 522.56, OT: 18.56 },
+      Juvenil:  { A: 32.59, B: 49.59, C: 65.59, D: 95.09, E: 527.59, OT: 29.59 },
+      Adultos:  { A: 57.82, B: 76.32, C: 117.82, D: 169.82, E: 534.82, OT: 46.33 }
+    }
+  };
+  const PRECIOS_COMPLEMENTOS = { Bicicleta: 9.00, 'Esquí Alpino': 35.50, Snow: 49.00 };
+  const PRECIO_TARJETA_FISICA = 2.00;
+  const CUOTA_CLUB = {
+    'Mayor de 18 sin hijos en el club': [55.00, 27.50],
+    'Mayor de 18 con hijos en el club': [45.00, 22.50],
+    'Menor de 18 años': [27.50, 13.75]
+  };
+  const MODALIDADES_CON_COMPLEMENTO = ['B', 'C', 'D', 'E'];
+
+  const el = (id) => document.getElementById(id);
+  const eur = (n) => n.toFixed(2).replace('.', ',') + ' €';
+
+  function actualizarVisibilidad() {
+    const modalidad = el('cal-modalidad').value;
+    el('cal-complemento-row').classList.toggle('cal-hidden', !MODALIDADES_CON_COMPLEMENTO.includes(modalidad));
+    if (!MODALIDADES_CON_COMPLEMENTO.includes(modalidad)) el('cal-complemento').value = '';
+
+    const reduccion = el('cal-reduccion').value;
+    el('cal-reduccion-just-row').classList.toggle('cal-hidden', reduccion !== 'si');
+  }
+
+  function calcularYMostrar() {
+    const tarjeta = el('cal-tarjeta').value;
+    const categoria = el('cal-categoria').value;
+    const modalidad = el('cal-modalidad').value;
+    const complemento = el('cal-complemento').value;
+    const tarjetaFisica = el('cal-tarjeta-fisica').value;
+    const cuotaTipo = el('cal-cuota-tipo').value;
+    const cuotaPeriodo = el('cal-cuota-periodo').value;
+
+    let total = 0;
+    let licencia = null, comp = null, fisica = null, club = null;
+
+    if (tarjeta && categoria && modalidad && PRECIOS_LICENCIA[tarjeta] && PRECIOS_LICENCIA[tarjeta][categoria]) {
+      const precio = PRECIOS_LICENCIA[tarjeta][categoria][modalidad];
+      if (typeof precio === 'number') { licencia = precio; total += precio; }
+    }
+    if (complemento && PRECIOS_COMPLEMENTOS[complemento]) {
+      comp = PRECIOS_COMPLEMENTOS[complemento]; total += comp;
+    }
+    if (tarjetaFisica === 'si') { fisica = PRECIO_TARJETA_FISICA; total += fisica; }
+    if (cuotaTipo && CUOTA_CLUB[cuotaTipo]) {
+      const idx = cuotaPeriodo === 'Octubre-Diciembre' ? 1 : 0;
+      club = CUOTA_CLUB[cuotaTipo][idx]; total += club;
+    }
+
+    el('cal-out-licencia').textContent = licencia !== null ? eur(licencia) : '—';
+    el('cal-out-complemento').textContent = comp !== null ? eur(comp) : '—';
+    el('cal-out-fisica').textContent = fisica !== null ? eur(fisica) : '—';
+    el('cal-out-club').textContent = club !== null ? eur(club) : '—';
+    el('cal-out-total').textContent = eur(total);
+
+    return total;
+  }
+
+  ['cal-tarjeta', 'cal-categoria', 'cal-modalidad', 'cal-complemento', 'cal-tarjeta-fisica', 'cal-cuota-tipo', 'cal-cuota-periodo', 'cal-reduccion']
+    .forEach((id) => el(id).addEventListener('change', () => { actualizarVisibilidad(); calcularYMostrar(); }));
+
+  function leerArchivoComoBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  el('cal-form').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    const btn = el('cal-submit-btn');
+    const msg = el('cal-msg');
+    msg.innerHTML = '';
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    try {
+      const archivo = el('cal-justificante').files[0];
+      if (!archivo) throw new Error('Adjunta el justificante de la transferencia.');
+
+      const base64 = await leerArchivoComoBase64(archivo);
+
+      const datos = {
+        nombre: el('cal-nombre').value,
+        nif: el('cal-nif').value,
+        email: el('cal-email').value,
+        telefono: el('cal-telefono').value,
+        categoria: el('cal-categoria').value,
+        tarjeta: el('cal-tarjeta').value,
+        modalidad: el('cal-modalidad').value,
+        complemento: el('cal-complemento').value,
+        tarjetaFisica: el('cal-tarjeta-fisica').value,
+        cuotaClubTipo: el('cal-cuota-tipo').value,
+        cuotaClubPeriodo: el('cal-cuota-periodo').value,
+        reduccion: el('cal-reduccion').value,
+        reduccionJustificacion: el('cal-reduccion-just').value,
+        justificanteBase64: base64,
+        justificanteNombre: archivo.name,
+        justificanteTipo: archivo.type
+      };
+
+      const resp = await fetch(ENDPOINT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(datos)
+      });
+      const resultado = await resp.json();
+
+      if (!resultado.ok) throw new Error(resultado.error || 'Error desconocido');
+
+      msg.innerHTML = '<div class="cal-msg ok">Solicitud enviada correctamente. El club revisará tu pago y tramitará tu licencia en un plazo aproximado de 10 días.</div>';
+      el('cal-form').reset();
+      calcularYMostrar();
+      actualizarVisibilidad();
+
+    } catch (err) {
+      msg.innerHTML = '<div class="cal-msg err">No se ha podido enviar la solicitud: ' + err.message + '</div>';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar solicitud';
+    }
+  });
+
+  actualizarVisibilidad();
+  calcularYMostrar();
+})();
+</script>
