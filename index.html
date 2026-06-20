@@ -280,6 +280,108 @@
         </div>
       </div>
 
+      <div class="cal-step cal-hidden" id="cal-familiares-section">
+        <span class="cal-step-label">4b · Familiares en esta misma solicitud</span>
+        <p class="cal-hint" style="margin-bottom:12px;">Añade aquí a tus hijos u otros familiares que también vayan a tramitar su licencia, para incluirlos en el mismo envío y pago. Cada uno necesita haber solicitado ya su propia licencia en la intranet de la FMRM y tener su propio código.</p>
+        <div id="cal-familiares-lista"></div>
+        <button type="button" id="cal-add-familiar" class="cal-submit" style="background: var(--musgo); margin-top:0;">+ Añadir familiar</button>
+      </div>
+
+      <template id="cal-familiar-template">
+        <div class="cal-familiar-card" style="border:1px solid var(--linea); border-radius:4px; padding:16px; margin-bottom:14px; background:#fff;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong class="cal-familiar-titulo">Familiar</strong>
+            <button type="button" class="cal-quitar-familiar" style="background:none; border:none; color:var(--terracota); cursor:pointer; font-size:13px;">Quitar</button>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Nombre completo</label>
+              <input type="text" class="f-nombre" required>
+            </div>
+            <div class="cal-field">
+              <label>NIF</label>
+              <input type="text" class="f-nif" required>
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Categoría</label>
+              <select class="f-categoria" required>
+                <option value="">Selecciona…</option>
+                <option value="Infantil">Infantil (0-13 años)</option>
+                <option value="Juvenil">Juvenil (14-17 años)</option>
+                <option value="Adultos">Adultos (18 años en adelante)</option>
+              </select>
+            </div>
+            <div class="cal-field">
+              <label>Tarjeta</label>
+              <select class="f-tarjeta" required>
+                <option value="">Selecciona…</option>
+                <option value="FMRM">FMRM</option>
+                <option value="FEDME">FEDME</option>
+              </select>
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Modalidad</label>
+              <select class="f-modalidad" required>
+                <option value="">Selecciona…</option>
+                <option value="AU">AU — Solo rocódromo</option>
+                <option value="A">A — Excursionismo/montañismo (no escalada)</option>
+                <option value="B">B — Escalada España/Andorra/Pirineo/Portugal/Marruecos</option>
+                <option value="C">C — Europa y Marruecos</option>
+                <option value="D">D — Mundial hasta 7000 m</option>
+                <option value="E">E — Expediciones polares/+7000 m</option>
+                <option value="OT">OT — Octubre-Diciembre</option>
+                <option value="HAB">HAB — Habilitación sin seguro</option>
+              </select>
+            </div>
+            <div class="cal-field f-complemento-row cal-hidden">
+              <label>Complemento</label>
+              <select class="f-complemento">
+                <option value="">Ninguno</option>
+                <option value="Bicicleta">Bicicleta (+9,00 €)</option>
+                <option value="Esquí Alpino">Esquí Alpino (+35,50 €)</option>
+                <option value="Snow">Snow (+49,00 €)</option>
+              </select>
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Tarjeta física</label>
+              <select class="f-tarjeta-fisica">
+                <option value="no">No, solo digital</option>
+                <option value="si">Sí (+2,00 €)</option>
+              </select>
+            </div>
+            <div class="cal-field">
+              <label>Cuota de socio (este familiar)</label>
+              <select class="f-cuota-tipo" required>
+                <option value="">Selecciona…</option>
+                <option value="Menor de 18 años">Menor de 18 años</option>
+                <option value="Mayor de 18 sin hijos en el club">Mayor de 18 sin hijos en el club</option>
+              </select>
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Código de solicitud FMRM</label>
+              <input type="text" class="f-codigo-fmrm" required placeholder="Ej. JCS87728">
+            </div>
+            <div class="cal-field">
+              <label>Captura de pantalla (opcional)</label>
+              <input type="file" class="f-captura-fmrm" accept="image/*,application/pdf">
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field" style="text-align:right; margin:0;">
+              <span style="font-size:13px; color:var(--musgo); font-weight:700;">Subtotal: <span class="f-subtotal">0,00 €</span></span>
+            </div>
+          </div>
+        </div>
+      </template>
+
       <div class="cal-step">
         <span class="cal-step-label">5 · Reducción de cuota (opcional)</span>
         <div class="cal-row">
@@ -305,6 +407,7 @@
         <div class="linea"><span>Complemento</span><span id="cal-out-complemento">—</span></div>
         <div class="linea"><span>Tarjeta física</span><span id="cal-out-fisica">—</span></div>
         <div class="linea"><span>Cuota de socio</span><span id="cal-out-club">—</span></div>
+        <div class="linea cal-hidden" id="cal-out-familiares-row"><span>Familiares adicionales</span><span id="cal-out-familiares">—</span></div>
         <div class="total"><span>Total a pagar por transferencia</span><span id="cal-out-total">0,00 €</span></div>
       </div>
 
@@ -376,7 +479,69 @@
 
     const reduccion = el('cal-reduccion').value;
     el('cal-reduccion-just-row').classList.toggle('cal-hidden', reduccion !== 'si');
+
+    const cuotaTipo = el('cal-cuota-tipo').value;
+    el('cal-familiares-section').classList.toggle('cal-hidden', cuotaTipo !== 'Mayor de 18 con hijos en el club');
   }
+
+  function calcularSubtotalFamiliar(card) {
+    const tarjeta = card.querySelector('.f-tarjeta').value;
+    const categoria = card.querySelector('.f-categoria').value;
+    const modalidad = card.querySelector('.f-modalidad').value;
+    const complemento = card.querySelector('.f-complemento').value;
+    const tarjetaFisica = card.querySelector('.f-tarjeta-fisica').value;
+    const cuotaTipo = card.querySelector('.f-cuota-tipo').value;
+
+    let total = 0;
+    if (tarjeta && categoria && modalidad && PRECIOS_LICENCIA[tarjeta] && PRECIOS_LICENCIA[tarjeta][categoria]) {
+      const precio = PRECIOS_LICENCIA[tarjeta][categoria][modalidad];
+      if (typeof precio === 'number') total += precio;
+    }
+    if (complemento && PRECIOS_COMPLEMENTOS[complemento]) total += PRECIOS_COMPLEMENTOS[complemento];
+    if (tarjetaFisica === 'si') total += PRECIO_TARJETA_FISICA;
+    if (cuotaTipo && CUOTA_CLUB[cuotaTipo]) total += CUOTA_CLUB[cuotaTipo][0]; // año completo para familiares
+
+    card.querySelector('.f-subtotal').textContent = eur(total);
+    return total;
+  }
+
+  function actualizarVisibilidadFamiliar(card) {
+    const modalidad = card.querySelector('.f-modalidad').value;
+    card.querySelector('.f-complemento-row').classList.toggle('cal-hidden', !MODALIDADES_CON_COMPLEMENTO.includes(modalidad));
+    if (!MODALIDADES_CON_COMPLEMENTO.includes(modalidad)) card.querySelector('.f-complemento').value = '';
+  }
+
+  function totalFamiliares() {
+    let total = 0;
+    document.querySelectorAll('#cal-familiares-lista .cal-familiar-card').forEach((card) => {
+      total += calcularSubtotalFamiliar(card);
+    });
+    return total;
+  }
+
+  let contadorFamiliares = 0;
+
+  function anadirFamiliar() {
+    contadorFamiliares++;
+    const tpl = el('cal-familiar-template');
+    const clone = tpl.content.cloneNode(true);
+    const card = clone.querySelector('.cal-familiar-card');
+    card.querySelector('.cal-familiar-titulo').textContent = 'Familiar ' + contadorFamiliares;
+
+    card.querySelectorAll('input, select').forEach((campo) => {
+      campo.addEventListener('change', () => { actualizarVisibilidadFamiliar(card); calcularYMostrar(); });
+      campo.addEventListener('input', () => calcularYMostrar());
+    });
+    card.querySelector('.cal-quitar-familiar').addEventListener('click', () => {
+      card.remove();
+      calcularYMostrar();
+    });
+
+    el('cal-familiares-lista').appendChild(card);
+    calcularYMostrar();
+  }
+
+  el('cal-add-familiar').addEventListener('click', anadirFamiliar);
 
   function calcularYMostrar() {
     const tarjeta = el('cal-tarjeta').value;
@@ -402,6 +567,11 @@
       const idx = cuotaPeriodo === 'Octubre-Diciembre' ? 1 : 0;
       club = CUOTA_CLUB[cuotaTipo][idx]; total += club;
     }
+
+    const totalFam = totalFamiliares();
+    total += totalFam;
+    el('cal-out-familiares-row').classList.toggle('cal-hidden', totalFam === 0);
+    el('cal-out-familiares').textContent = eur(totalFam);
 
     el('cal-out-licencia').textContent = licencia !== null ? eur(licencia) : '—';
     el('cal-out-complemento').textContent = comp !== null ? eur(comp) : '—';
@@ -449,6 +619,37 @@
         capturaTipo = captura.type;
       }
 
+      const familiares = [];
+      const cardsFamiliares = document.querySelectorAll('#cal-familiares-lista .cal-familiar-card');
+      for (const card of cardsFamiliares) {
+        const codigoFam = card.querySelector('.f-codigo-fmrm').value.trim();
+        if (!codigoFam) throw new Error('Falta el código FMRM de uno de los familiares añadidos.');
+
+        let famCapturaBase64 = '', famCapturaNombre = '', famCapturaTipo = '';
+        const famCaptura = card.querySelector('.f-captura-fmrm').files[0];
+        if (famCaptura) {
+          famCapturaBase64 = await leerArchivoComoBase64(famCaptura);
+          famCapturaNombre = famCaptura.name;
+          famCapturaTipo = famCaptura.type;
+        }
+
+        familiares.push({
+          nombre: card.querySelector('.f-nombre').value,
+          nif: card.querySelector('.f-nif').value,
+          categoria: card.querySelector('.f-categoria').value,
+          tarjeta: card.querySelector('.f-tarjeta').value,
+          modalidad: card.querySelector('.f-modalidad').value,
+          complemento: card.querySelector('.f-complemento').value,
+          tarjetaFisica: card.querySelector('.f-tarjeta-fisica').value,
+          cuotaClubTipo: card.querySelector('.f-cuota-tipo').value,
+          cuotaClubPeriodo: 'Año completo',
+          codigoFmrm: codigoFam,
+          capturaFmrmBase64: famCapturaBase64,
+          capturaFmrmNombre: famCapturaNombre,
+          capturaFmrmTipo: famCapturaTipo
+        });
+      }
+
       const datos = {
         nombre: el('cal-nombre').value,
         nif: el('cal-nif').value,
@@ -469,7 +670,8 @@
         reduccionJustificacion: el('cal-reduccion-just').value,
         justificanteBase64: base64,
         justificanteNombre: archivo.name,
-        justificanteTipo: archivo.type
+        justificanteTipo: archivo.type,
+        familiares: familiares
       };
 
       const resp = await fetch(ENDPOINT_URL, {
@@ -483,6 +685,8 @@
 
       msg.innerHTML = '<div class="cal-msg ok">Solicitud enviada correctamente. El club revisará tu pago y tramitará tu licencia en un plazo aproximado de 10 días.</div>';
       el('cal-form').reset();
+      el('cal-familiares-lista').innerHTML = '';
+      contadorFamiliares = 0;
       calcularYMostrar();
       actualizarVisibilidad();
 
