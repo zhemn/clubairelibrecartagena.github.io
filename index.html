@@ -240,7 +240,26 @@
       </div>
 
       <div class="cal-step">
-        <span class="cal-step-label">3 · Cuota de socio del club</span>
+        <span class="cal-step-label">3 · Verificación de tu solicitud en la FMRM</span>
+        <div class="cal-bizum-box" style="background: var(--musgo);">
+          Antes de seguir, debes haber solicitado ya la licencia a través de la <strong>intranet de la FMRM</strong> (www.fmrm.net → Licencias → Tramitación de Licencias → tu club). Al final de ese proceso, la web te muestra un <strong>código de licencia</strong> (ej. <em>JCS87728</em>) y el estado "Solicitud". Necesitamos ese código para verificar que tu solicitud existe antes de tramitar el pago.
+        </div>
+        <div class="cal-row">
+          <div class="cal-field">
+            <label for="cal-codigo-fmrm">Código de solicitud FMRM</label>
+            <input type="text" id="cal-codigo-fmrm" required placeholder="Ej. JCS87728">
+            <p class="cal-hint">Aparece en la intranet de la FMRM justo después de pulsar "Guardar" en tu solicitud, en la columna "Código Licencia".</p>
+          </div>
+          <div class="cal-field">
+            <label for="cal-captura-fmrm">Captura de pantalla (opcional, recomendado)</label>
+            <input type="file" id="cal-captura-fmrm" accept="image/*,application/pdf">
+            <p class="cal-hint">Captura de la pantalla donde aparece tu código y el estado "Solicitud".</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-step">
+        <span class="cal-step-label">4 · Cuota de socio del club</span>
         <div class="cal-row">
           <div class="cal-field">
             <label for="cal-cuota-tipo">Tipo de cuota</label>
@@ -262,7 +281,7 @@
       </div>
 
       <div class="cal-step">
-        <span class="cal-step-label">4 · Reducción de cuota (opcional)</span>
+        <span class="cal-step-label">5 · Reducción de cuota (opcional)</span>
         <div class="cal-row">
           <div class="cal-field">
             <label for="cal-reduccion">¿Solicitas reducción por voluntariado, hijos en el club, podios, etc.?</label>
@@ -290,7 +309,7 @@
       </div>
 
       <div class="cal-step">
-        <span class="cal-step-label">5 · Pago por transferencia</span>
+        <span class="cal-step-label">6 · Pago por transferencia</span>
         <div class="cal-bizum-box">
           Haz una transferencia a la cuenta del Club Aire Libre Cartagena:<br>
           <strong>ES35 0073 0100 5905 0551 7024</strong><br>
@@ -307,7 +326,7 @@
       </div>
 
       <div class="cal-step">
-        <span class="cal-step-label">6 · Cesión de datos</span>
+        <span class="cal-step-label">7 · Cesión de datos</span>
         <div class="cal-checkbox-row">
           <input type="checkbox" id="cal-acepto" required>
           <label for="cal-acepto">He leído y acepto la cláusula de cesión de datos del Club Aire Libre Cartagena (Anexo I) para la gestión de mi licencia federativa.</label>
@@ -417,7 +436,18 @@
       const archivo = el('cal-justificante').files[0];
       if (!archivo) throw new Error('Adjunta el justificante de la transferencia.');
 
+      const codigoFmrm = el('cal-codigo-fmrm').value.trim();
+      if (!codigoFmrm) throw new Error('Indica el código de solicitud de la FMRM.');
+
       const base64 = await leerArchivoComoBase64(archivo);
+
+      let capturaBase64 = '', capturaNombre = '', capturaTipo = '';
+      const captura = el('cal-captura-fmrm').files[0];
+      if (captura) {
+        capturaBase64 = await leerArchivoComoBase64(captura);
+        capturaNombre = captura.name;
+        capturaTipo = captura.type;
+      }
 
       const datos = {
         nombre: el('cal-nombre').value,
@@ -429,6 +459,10 @@
         modalidad: el('cal-modalidad').value,
         complemento: el('cal-complemento').value,
         tarjetaFisica: el('cal-tarjeta-fisica').value,
+        codigoFmrm: codigoFmrm,
+        capturaFmrmBase64: capturaBase64,
+        capturaFmrmNombre: capturaNombre,
+        capturaFmrmTipo: capturaTipo,
         cuotaClubTipo: el('cal-cuota-tipo').value,
         cuotaClubPeriodo: el('cal-cuota-periodo').value,
         reduccion: el('cal-reduccion').value,
