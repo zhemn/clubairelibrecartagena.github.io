@@ -161,13 +161,6 @@
     <h2>Solicitud de licencia federativa 2026</h2>
   </div>
 
-  <div class="cal-body" id="cal-body-cerrado" style="display:none;">
-    <div class="cal-msg" style="text-align:center; padding:40px 20px;">
-      <p style="font-size:16px; margin-bottom:6px;"><strong>El formulario todavía no está abierto.</strong></p>
-      <p style="font-size:14px; color:#6b7268;">Vuelve a consultar esta página más adelante, o espera el aviso del club con la fecha de apertura.</p>
-    </div>
-  </div>
-
   <div class="cal-body" id="cal-body-form">
     <form id="cal-form">
 
@@ -469,22 +462,6 @@
 
 <script>
 (function () {
-  // ⚠️ FECHA DE APERTURA DEL FORMULARIO
-  // Mientras la fecha de hoy sea anterior a esta, se muestra el aviso de "no disponible"
-  // en vez del formulario. Cambia solo estos 3 números (año, mes, día) cuando quieras
-  // adelantar o retrasar la apertura. El mes va de 0 (enero) a 11 (diciembre).
-  const FECHA_APERTURA = new Date(2026, 6, 1); // 1 de julio de 2026
-
-  const hoy = new Date();
-  if (hoy < FECHA_APERTURA) {
-    document.getElementById('cal-body-form').style.display = 'none';
-    document.getElementById('cal-body-cerrado').style.display = 'block';
-    return; // no seguir cargando el resto del formulario
-  } else {
-    document.getElementById('cal-body-cerrado').style.display = 'none';
-    document.getElementById('cal-body-form').style.display = 'block';
-  }
-
   // ⚠️ Pega aquí la URL de tu Apps Script publicado como aplicación web
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbwBGEEGfqBOJx32iC5su2G2E2f-a19ggjI4Lnoa8sMkaA3HT0OCHAmRxLmD1kXWSFC3/exec';
 
