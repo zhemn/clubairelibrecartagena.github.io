@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de licencia federativa — Club Aire Libre Cartagena</title>
+</head>
+<body style="margin:0; padding:16px; background:#f7f4ec;">
+
 <div id="licencia-app" class="cal-licencia-form">
 
   <style>
@@ -152,7 +161,14 @@
     <h2>Solicitud de licencia federativa 2026</h2>
   </div>
 
-  <div class="cal-body">
+  <div class="cal-body" id="cal-body-cerrado" style="display:none;">
+    <div class="cal-msg" style="text-align:center; padding:40px 20px;">
+      <p style="font-size:16px; margin-bottom:6px;"><strong>El formulario todavía no está abierto.</strong></p>
+      <p style="font-size:14px; color:#6b7268;">Vuelve a consultar esta página más adelante, o espera el aviso del club con la fecha de apertura.</p>
+    </div>
+  </div>
+
+  <div class="cal-body" id="cal-body-form">
     <form id="cal-form">
 
       <div class="cal-step">
@@ -206,7 +222,6 @@
             <select id="cal-modalidad" required>
               <option value="">Selecciona…</option>
               <option value="AU">AU — Solo rocódromo (Región de Murcia, no válida para competición)</option>
-              <option value="A">A — Excursionismo, montañismo, senderismo (NO válida para escalada)</option>
               <option value="B">B — Escalada, alpinismo, barrancos… España, Andorra, Pirineo Fr., Portugal y Marruecos</option>
               <option value="C">C — Europa y Marruecos</option>
               <option value="D">D — Mundial hasta 7000 m, sin expediciones polares</option>
@@ -271,11 +286,12 @@
             </select>
           </div>
           <div class="cal-field">
-            <label for="cal-cuota-periodo">Periodo</label>
+            <label for="cal-cuota-periodo">Fecha de alta</label>
             <select id="cal-cuota-periodo" required>
-              <option value="Año completo">Año completo</option>
-              <option value="Octubre-Diciembre">Octubre - Diciembre</option>
+              <option value="Año completo">Enero — Septiembre</option>
+              <option value="Octubre-Diciembre">Octubre — Diciembre</option>
             </select>
+            <p class="cal-hint">Indica el periodo en el que te has dado de alta, no es una elección de precio.</p>
           </div>
         </div>
       </div>
@@ -328,7 +344,6 @@
               <select class="f-modalidad" required>
                 <option value="">Selecciona…</option>
                 <option value="AU">AU — Solo rocódromo</option>
-                <option value="A">A — Excursionismo/montañismo (no escalada)</option>
                 <option value="B">B — Escalada España/Andorra/Pirineo/Portugal/Marruecos</option>
                 <option value="C">C — Europa y Marruecos</option>
                 <option value="D">D — Mundial hasta 7000 m</option>
@@ -361,6 +376,15 @@
                 <option value="">Selecciona…</option>
                 <option value="Menor de 18 años">Menor de 18 años</option>
                 <option value="Mayor de 18 sin hijos en el club">Mayor de 18 sin hijos en el club</option>
+              </select>
+            </div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-field">
+              <label>Fecha de alta (este familiar)</label>
+              <select class="f-cuota-periodo" required>
+                <option value="Año completo">Enero — Septiembre</option>
+                <option value="Octubre-Diciembre">Octubre — Diciembre</option>
               </select>
             </div>
           </div>
@@ -445,6 +469,22 @@
 
 <script>
 (function () {
+  // ⚠️ FECHA DE APERTURA DEL FORMULARIO
+  // Mientras la fecha de hoy sea anterior a esta, se muestra el aviso de "no disponible"
+  // en vez del formulario. Cambia solo estos 3 números (año, mes, día) cuando quieras
+  // adelantar o retrasar la apertura. El mes va de 0 (enero) a 11 (diciembre).
+  const FECHA_APERTURA = new Date(2026, 6, 1); // 1 de julio de 2026
+
+  const hoy = new Date();
+  if (hoy < FECHA_APERTURA) {
+    document.getElementById('cal-body-form').style.display = 'none';
+    document.getElementById('cal-body-cerrado').style.display = 'block';
+    return; // no seguir cargando el resto del formulario
+  } else {
+    document.getElementById('cal-body-cerrado').style.display = 'none';
+    document.getElementById('cal-body-form').style.display = 'block';
+  }
+
   // ⚠️ Pega aquí la URL de tu Apps Script publicado como aplicación web
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbwBGEEGfqBOJx32iC5su2G2E2f-a19ggjI4Lnoa8sMkaA3HT0OCHAmRxLmD1kXWSFC3/exec';
 
@@ -491,6 +531,7 @@
     const complemento = card.querySelector('.f-complemento').value;
     const tarjetaFisica = card.querySelector('.f-tarjeta-fisica').value;
     const cuotaTipo = card.querySelector('.f-cuota-tipo').value;
+    const cuotaPeriodo = card.querySelector('.f-cuota-periodo').value;
 
     let total = 0;
     if (tarjeta && categoria && modalidad && PRECIOS_LICENCIA[tarjeta] && PRECIOS_LICENCIA[tarjeta][categoria]) {
@@ -499,7 +540,10 @@
     }
     if (complemento && PRECIOS_COMPLEMENTOS[complemento]) total += PRECIOS_COMPLEMENTOS[complemento];
     if (tarjetaFisica === 'si') total += PRECIO_TARJETA_FISICA;
-    if (cuotaTipo && CUOTA_CLUB[cuotaTipo]) total += CUOTA_CLUB[cuotaTipo][0]; // año completo para familiares
+    if (cuotaTipo && CUOTA_CLUB[cuotaTipo]) {
+      const idx = cuotaPeriodo === 'Octubre-Diciembre' ? 1 : 0;
+      total += CUOTA_CLUB[cuotaTipo][idx];
+    }
 
     card.querySelector('.f-subtotal').textContent = eur(total);
     return total;
@@ -642,7 +686,7 @@
           complemento: card.querySelector('.f-complemento').value,
           tarjetaFisica: card.querySelector('.f-tarjeta-fisica').value,
           cuotaClubTipo: card.querySelector('.f-cuota-tipo').value,
-          cuotaClubPeriodo: 'Año completo',
+          cuotaClubPeriodo: card.querySelector('.f-cuota-periodo').value,
           codigoFmrm: codigoFam,
           capturaFmrmBase64: famCapturaBase64,
           capturaFmrmNombre: famCapturaNombre,
@@ -702,3 +746,6 @@
   calcularYMostrar();
 })();
 </script>
+
+</body>
+</html>
