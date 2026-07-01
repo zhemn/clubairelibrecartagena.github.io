@@ -172,18 +172,20 @@
             <input type="text" id="cal-nombre" required>
           </div>
           <div class="cal-field">
-            <label for="cal-nif">NIF</label>
-            <input type="text" id="cal-nif" required>
+            <label for="cal-nif">NIF / NIE</label>
+            <input type="text" id="cal-nif" required placeholder="12345678A" maxlength="9" autocomplete="off" style="text-transform:uppercase">
+            <p class="cal-hint">DNI: 8 números + letra. NIE: X/Y/Z + 7 números + letra.</p>
           </div>
         </div>
         <div class="cal-row">
           <div class="cal-field">
             <label for="cal-email">Email de contacto</label>
-            <input type="email" id="cal-email" required>
+            <input type="email" id="cal-email" required placeholder="nombre@ejemplo.com" autocomplete="email">
           </div>
           <div class="cal-field">
             <label for="cal-telefono">Teléfono</label>
-            <input type="tel" id="cal-telefono" required>
+            <input type="tel" id="cal-telefono" required placeholder="612345678" maxlength="15" autocomplete="tel">
+            <p class="cal-hint">9 dígitos (móvil o fijo español), o formato internacional con +.</p>
           </div>
         </div>
       </div>
@@ -615,6 +617,74 @@
     });
   }
 
+  // ───────────────────────────────────────────────
+  // VALIDACIÓN DE CAMPOS
+  // ───────────────────────────────────────────────
+
+  function normalizarNif(nif) {
+    return nif.trim().toUpperCase().replace(/\s/g, '');
+  }
+
+  function validarNif(nif) {
+    const letras = 'TRWAGMYFPDXBNJZSQVHLCKE';
+    nif = normalizarNif(nif);
+    // DNI: 8 dígitos + letra
+    const reDni = /^(\d{8})([A-Z])$/;
+    // NIE: X/Y/Z + 7 dígitos + letra
+    const reNie = /^([XYZ])(\d{7})([A-Z])$/;
+    if (reDni.test(nif)) {
+      const num = parseInt(nif.slice(0, 8), 10);
+      return letras[num % 23] === nif[8];
+    }
+    if (reNie.test(nif)) {
+      const m = nif.match(reNie);
+      const prefijo = { X: 0, Y: 1, Z: 2 }[m[1]];
+      const num = parseInt(String(prefijo) + m[2], 10);
+      return letras[num % 23] === m[3];
+    }
+    return false;
+  }
+
+  function validarEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+  }
+
+  function validarTelefono(tel) {
+    const t = tel.trim().replace(/\s/g, '');
+    // Internacional con +
+    if (/^\+\d{7,14}$/.test(t)) return true;
+    // Español: 9 dígitos empezando por 6,7,8,9
+    return /^[6789]\d{8}$/.test(t);
+  }
+
+  function mostrarErrorCampo(id, msg) {
+    const campo = el(id);
+    campo.style.outline = '2px solid var(--terracota)';
+    let hint = campo.nextElementSibling;
+    if (!hint || !hint.classList.contains('cal-error-inline')) {
+      hint = document.createElement('p');
+      hint.className = 'cal-hint cal-error-inline';
+      hint.style.color = 'var(--terracota)';
+      campo.parentNode.insertBefore(hint, campo.nextSibling);
+    }
+    hint.textContent = msg;
+  }
+
+  function limpiarErrorCampo(id) {
+    const campo = el(id);
+    campo.style.outline = '';
+    const hint = campo.nextElementSibling;
+    if (hint && hint.classList.contains('cal-error-inline')) hint.remove();
+  }
+
+  // Normalizar NIF a mayúsculas mientras el usuario escribe
+  el('cal-nif').addEventListener('input', function () {
+    this.value = this.value.toUpperCase();
+    limpiarErrorCampo('cal-nif');
+  });
+  el('cal-email').addEventListener('input', () => limpiarErrorCampo('cal-email'));
+  el('cal-telefono').addEventListener('input', () => limpiarErrorCampo('cal-telefono'));
+
   el('cal-form').addEventListener('submit', async function (ev) {
     ev.preventDefault();
     const btn = el('cal-submit-btn');
@@ -624,6 +694,28 @@
     btn.textContent = 'Enviando…';
 
     try {
+      // Validar NIF
+      const nifVal = normalizarNif(el('cal-nif').value);
+      if (!validarNif(nifVal)) {
+        mostrarErrorCampo('cal-nif', 'NIF/NIE no válido. Comprueba el formato y la letra de control.');
+        throw new Error('El NIF/NIE introducido no es válido.');
+      }
+      limpiarErrorCampo('cal-nif');
+
+      // Validar email
+      if (!validarEmail(el('cal-email').value)) {
+        mostrarErrorCampo('cal-email', 'El email no tiene un formato válido.');
+        throw new Error('El email no tiene un formato válido.');
+      }
+      limpiarErrorCampo('cal-email');
+
+      // Validar teléfono
+      if (!validarTelefono(el('cal-telefono').value)) {
+        mostrarErrorCampo('cal-telefono', 'El teléfono no es válido. Usa 9 dígitos (ej. 612345678) o formato internacional (ej. +34612345678).');
+        throw new Error('El teléfono no es válido.');
+      }
+      limpiarErrorCampo('cal-telefono');
+
       const archivo = el('cal-justificante').files[0];
       if (!archivo) throw new Error('Adjunta el justificante de la transferencia.');
 
@@ -673,7 +765,7 @@
 
       const datos = {
         nombre: el('cal-nombre').value,
-        nif: el('cal-nif').value,
+        nif: normalizarNif(el('cal-nif').value),
         email: el('cal-email').value,
         telefono: el('cal-telefono').value,
         categoria: el('cal-categoria').value,
