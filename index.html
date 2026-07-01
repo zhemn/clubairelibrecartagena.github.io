@@ -796,7 +796,14 @@
 
       if (!resultado.ok) throw new Error(resultado.error || 'Error desconocido');
 
-      msg.innerHTML = '<div class="cal-msg ok">Solicitud enviada correctamente. El club revisará tu pago y tramitará tu licencia en un plazo aproximado de 10 días.</div>';
+      msg.innerHTML = `<div class="cal-msg ok" style="line-height:1.7;">
+        <strong>🧗 ¡Vía encadenada!</strong><br>
+        Tu solicitud ha llegado al club sin caída. Primer largo superado.<br><br>
+        Un miembro de la directiva, armado con su mejor café y una hoja de cálculo, revisará tu ingreso antes del próximo viernes.
+        En unos <strong>10 días</strong> tienes tu licencia — tiempo justo para calentar dedos y revisar el material.<br><br>
+        <em>Y recuerda: usando este formulario en vez de mandarnos un correo con el justificante adjunto, el asunto en blanco y los datos en el cuerpo del mensaje…
+        has contribuido activamente a preservar la salud mental de los miembros de la directiva. La comunidad te lo agradece.</em>
+      </div>`;
       el('cal-form').reset();
       el('cal-familiares-lista').innerHTML = '';
       contadorFamiliares = 0;
